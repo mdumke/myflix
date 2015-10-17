@@ -3,4 +3,11 @@ class Video < ActiveRecord::Base
 
   validates :title, presence: true
   validates :description, presence: true
+
+  def self.search_by_title(query)
+    return [] if query.blank?
+
+    where('lower(title) like ?', "%#{ query.downcase }%")
+      .order('created_at desc')
+  end
 end
