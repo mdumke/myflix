@@ -24,5 +24,29 @@ Video.create([
     description: 'The film examines the struggles of a minor Tokyo bureaucrat and his final quest for meaning.',
     large_cover_url: 'tmp/ikiru_large.jpg',
     small_cover_url: 'tmp/ikiru_small.jpg'
+  },
+  {
+    title: 'Futurama',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dolorem omnis, incidunt numquam repellendus impedit, voluptatem minus magni suscipit architecto similique. At cupiditate repudiandae et in possimus saepe provident, suscipit quibusdam.',
+    large_cover_url: 'tmp/futurama.jpg',
+    small_cover_url: 'tmp/futurama.jpg'
+  },
+  {
+    title: 'Monk',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quam exercitationem voluptas voluptate praesentium possimus consectetur harum iusto eum, accusamus, rem asperiores reprehenderit officiis magni dolore modi laboriosam nisi dignissimos numquam.',
+    large_cover_url: 'tmp/monk_large.jpg',
+    small_cover_url: 'tmp/monk.jpg'
+  },
+  {
+    title: 'South Park',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perspiciatis cumque mollitia ipsam. Laudantium odio commodi alias praesentium, natus labore fuga placeat culpa, eius quis quidem, dicta adipisci ipsa enim eligendi.',
+    large_cover_url: 'tmp/south_park.jpg',
+    small_cover_url: 'tmp/south_park.jpg'
+  },
+  {
+    title: 'Family Guy',
+    description: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Iure id eum dolorem quisquam corporis. Modi, cum eaque numquam, inventore laboriosam et magnam optio, eos dolorem voluptatibus iure reiciendis deleniti quo.',
+    large_cover_url: 'tmp/family_guy.jpg',
+    small_cover_url: 'tmp/family_guy.jpg'
   }
 ])
