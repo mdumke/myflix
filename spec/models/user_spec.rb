@@ -29,8 +29,8 @@ describe User, type: :model do
     u = User.create(
       full_name: 'Hans Vollmeise', 
       email: 'Hans@Vollmeise.com',
-      password: '123',
-      password_confirmation: '123')
+      password: '1234',
+      password_confirmation: '1234')
 
     expect(u.valid?).to be_truthy
   end
