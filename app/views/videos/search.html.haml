@@ -11,5 +11,8 @@
           = link_to video do
             %img(src="#{video.small_cover_url}")
 
+- elsif !@query.blank?
+  %h1= "No Search Results for \"#{ @query }\""
+
 - else
   %h1 No Search Results
