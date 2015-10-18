@@ -23,6 +23,10 @@ describe Video do
       @family_friend.destroy
     end
 
+    it 'returns an empty array if no argument is passed' do
+      expect(Video.search_by_title.to_a).to eql []
+    end
+
     it 'returns an empty array if no video is found in a search' do
       expect(Video.search_by_title('groundhog').to_a).to eql []
     end

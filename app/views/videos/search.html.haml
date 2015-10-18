@@ -1,0 +1,15 @@
+- if @videos.any?
+
+  %h1 Search Results
+  
+  %article.video_category
+    .videos.row
+  
+      - @videos.each do |video|
+  
+        .video.col-sm-2
+          = link_to video do
+            %img(src="#{video.small_cover_url}")
+
+- else
+  %h1 No Search Results
