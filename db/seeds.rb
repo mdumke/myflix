@@ -75,3 +75,12 @@ puts 'create videos'
     }
   ])
 end
+
+puts 'create users'
+
+User.create([
+  { email: 'matthias@example.com', password: '123', full_name: 'Matthias Dumke' },
+  { email: 'lambda@example.com', password: '123', full_name: 'Lamba Calculus' },
+  { email: 'java@example.com', password: '123', full_name: 'Java Script' }
+])
+

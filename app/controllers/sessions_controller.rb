@@ -1,9 +1,11 @@
 class SessionsController < ApplicationController
   def front
+    redirect_to home_path if current_user
   end
   
   # GET /login
   def new
+    redirect_to home_path if current_user
   end
 
   # POST /login
@@ -23,9 +25,7 @@ class SessionsController < ApplicationController
   # GET /logout
   def destroy
     session[:user_id] = nil
-    flash['notice'] = 'successfully signed out'
-
-    redirect_to root_path
+    redirect_to root_path, notice: 'Successfully signed out'
   end
 end
 
