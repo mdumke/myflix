@@ -22,7 +22,13 @@ group :development, :test do
   gem 'pry'
   gem 'pry-rails'
   gem 'pry-nav'
+
+  gem 'spring-commands-rspec'
   gem 'rspec-rails', '2.99'
+  gem 'guard-rspec'
+
+  gem 'fabrication-rails'
+  gem 'faker'
 end
 
 group :test do

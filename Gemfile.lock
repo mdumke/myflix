@@ -53,6 +53,28 @@ GEM
     erubis (2.7.0)
     eventmachine (1.0.0)
     execjs (2.0.2)
+    fabrication (2.14.1)
+    fabrication-rails (0.0.1)
+      fabrication
+      railties (>= 3.0)
+    faker (1.4.3)
+      i18n (~> 0.5)
+    ffi (1.9.10)
+    formatador (0.2.5)
+    guard (2.13.0)
+      formatador (>= 0.2.4)
+      listen (>= 2.7, <= 4.0)
+      lumberjack (~> 1.0)
+      nenv (~> 0.1)
+      notiffany (~> 0.0)
+      pry (>= 0.9.12)
+      shellany (~> 0.0)
+      thor (>= 0.18.1)
+    guard-compat (1.2.1)
+    guard-rspec (4.6.4)
+      guard (~> 2.1)
+      guard-compat (~> 1.1)
+      rspec (>= 2.99.0, < 4.0)
     haml (4.0.5)
       tilt
     haml-rails (0.5.3)
@@ -66,6 +88,10 @@ GEM
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
     json (1.8.1)
+    listen (3.0.3)
+      rb-fsevent (>= 0.9.3)
+      rb-inotify (>= 0.9)
+    lumberjack (1.0.9)
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
@@ -73,6 +99,10 @@ GEM
     mime-types (1.25.1)
     minitest (5.3.4)
     multi_json (1.10.1)
+    nenv (0.2.0)
+    notiffany (0.0.8)
+      nenv (~> 0.1)
+      shellany (~> 0.0)
     pg (0.17.0)
     polyglot (0.3.5)
     pry (0.9.12.3)
@@ -107,6 +137,13 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     rake (10.3.2)
+    rb-fsevent (0.9.6)
+    rb-inotify (0.9.5)
+      ffi (>= 0.5.0)
+    rspec (2.99.0)
+      rspec-core (~> 2.99.0)
+      rspec-expectations (~> 2.99.0)
+      rspec-mocks (~> 2.99.0)
     rspec-collection_matchers (1.0.0)
       rspec-expectations (>= 2.99.0.beta1)
     rspec-core (2.99.0)
@@ -128,9 +165,13 @@ GEM
       sass (~> 3.2.0)
       sprockets (~> 2.8, <= 2.11.0)
       sprockets-rails (~> 2.0)
+    shellany (0.0.1)
     shoulda-matchers (3.0.0)
       activesupport (>= 4.0.0)
     slop (3.4.7)
+    spring (1.4.0)
+    spring-commands-rspec (1.0.4)
+      spring (>= 0.9.1)
     sprockets (2.11.0)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -167,6 +208,9 @@ DEPENDENCIES
   bootstrap_form
   coffee-rails
   database_cleaner (= 1.2.0)
+  fabrication-rails
+  faker
+  guard-rspec
   haml-rails
   jquery-rails
   pg
@@ -178,6 +222,7 @@ DEPENDENCIES
   rspec-rails (= 2.99)
   sass-rails
   shoulda-matchers (~> 3.0)
+  spring-commands-rspec
   thin
   uglifier
 
