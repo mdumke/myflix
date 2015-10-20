@@ -1,22 +1,34 @@
 require 'spec_helper'
 
 describe VideosController do
-  describe 'GET show/1' do
+  describe 'GET show' do
     let(:video) { Fabricate(:video) }
 
-    it 'sets the @video variable for id 1' do
+    it 'sets @video for authenticated users' do
+      session[:user_id] = Fabricate(:user).id
       get :show, id: video.id
-
-      expect(assigns(:video)).to eq video
+      expect(assigns(:video)).to eq(video)
     end
 
-    it 'renders the show view' do
-      user = Fabricate(:user)
-      session[:user_id] = user.id
-
+    it 'redirects unauthenticated users to sign in page' do
       get :show, id: video.id
+      expect(response).to redirect_to root_path
+    end
+  end
 
-      expect(response).to render_template :show
+  describe 'GET search' do
+    let(:dogtooth)  { Fabricate(:video, title: 'dogtooth') }
+    let(:godfather) { Fabricate(:video, title: 'godfather') }
+
+    it 'sets @videos for authenticated users' do
+      session[:user_id] = Fabricate(:user).id
+      get :search, q: 'tooth'
+      expect(assigns(:videos)).to eq([dogtooth])
+    end
+
+    it 'redirects unauthenticated users to sign in page' do
+      get :search, q: 'tooth'
+      expect(response).to redirect_to root_path
     end
   end
 end
