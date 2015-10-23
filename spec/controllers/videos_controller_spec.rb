@@ -1,6 +1,19 @@
 require 'spec_helper'
 
 describe VideosController do
+  describe 'GET index' do
+    it 'sets the @categories variable for authenticated users' do
+      session[:user_id] = Fabricate(:user).id
+      get :index
+      expect(assigns(:categories)).to_not be_nil
+    end
+
+    it 'redirects to front page for unauthenticated users' do
+      get :index
+      expect(response).to redirect_to root_path
+    end
+  end
+
   describe 'GET show' do
     let(:video) { Fabricate(:video) }
 
