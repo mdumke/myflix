@@ -16,17 +16,16 @@ class VideosController < ApplicationController
   end
 
   def review
-    @review = Review.new(
+    review = Review.new(
       review_params.merge(video: @video, user: current_user))
     
-    if @review.save
-      flash.now['notice'] = 'Thank you for reviewing this title.'
-      @review = Review.new
+    if review.save
+      flash['notice'] = 'Thank you for reviewing this title.'
     else 
-      flash.now['error'] = 'There was an error with your review.'
+      flash['error'] = 'There was an error with your review.'
     end
 
-    render :show
+    redirect_to video_path(@video)
   end
 
   private

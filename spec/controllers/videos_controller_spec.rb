@@ -75,17 +75,8 @@ describe VideosController do
         expect(Review.first.user).to eq alice
       end
 
-      it 'sets @review' do
-        expect(assigns(:review)).not_to be_nil
-      end
-
-      it 'sets resets @preview' do
-        expect(assigns(:review).rating).to be_nil
-        expect(assigns(:review).text).to be_nil
-      end
-
-      it 'renders the video show view' do
-        expect(response).to render_template :show
+      it 'redirects to the video show page' do
+        expect(response).to redirect_to video_path(modern_times)
       end
 
       it 'sets the flash-notice' do
@@ -102,12 +93,8 @@ describe VideosController do
         expect(Review.count).to eq 0
       end
 
-      it 'sets @review' do
-        expect(assigns(:review)).not_to be_nil
-      end
-
-      it 'renders the video show view' do
-        expect(response).to render_template :show
+      it 'redirects to the video show page' do
+        expect(response).to redirect_to video_path(modern_times)
       end
 
       it 'sets the flash-error' do
