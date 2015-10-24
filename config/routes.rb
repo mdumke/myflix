@@ -13,6 +13,7 @@ Myflix::Application.routes.draw do
 
   resources :videos, only: [:index, :show] do
     get 'search', on: :collection
+    post 'review', on: :member
   end
 
   resources :categories, only: [:show]
