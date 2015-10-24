@@ -8,6 +8,7 @@ class VideosController < ApplicationController
 
   def show
     @review = Review.new
+    @reviews = @video.reviews
   end
 
   def search

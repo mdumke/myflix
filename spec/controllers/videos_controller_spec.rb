@@ -30,6 +30,10 @@ describe VideosController do
       it 'sets @review' do
         expect(assigns(:review)).not_to be_nil
       end
+
+      it 'sets @reviews' do
+        expect(assigns(:reviews)).not_to be_nil
+      end
     end
 
     context 'for unauthenticated users' do

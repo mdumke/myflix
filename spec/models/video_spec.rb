@@ -52,23 +52,20 @@ describe Video do
   end
 
   describe 'review related tasks' do
-    let (:alice) { Fabricate(:user) }
     let (:vertigo) { Fabricate(:video, title: 'Vertigo') }
 
-    it 'returns the average rating from all reviews with 1 dec precision' do
-      review1 = Fabricate(:review, user: alice, video: vertigo, rating: 1, created_at: 1.day.ago)
-      review2 = Fabricate(:review, user: alice, video: vertigo, rating: 1, created_at: 3.day.ago)
-      review3 = Fabricate(:review, user: alice, video: vertigo, rating: 2, created_at: 2.day.ago)
+    before do
+      @review1 = Fabricate(:review, video: vertigo, rating: 1, created_at: 1.day.ago)
+      @review2 = Fabricate(:review, video: vertigo, rating: 1, created_at: 3.day.ago)
+      @review3 = Fabricate(:review, video: vertigo, rating: 2, created_at: 2.day.ago)
+    end
 
+    it 'returns the average rating from all reviews with 1 dec precision' do
       expect(vertigo.avg_rating).to eq 1.3
     end
 
     it 'returns the associated reviews in reverse order of creation' do
-      review1 = Fabricate(:review, user: alice, video: vertigo, rating: 1, created_at: 1.day.ago)
-      review2 = Fabricate(:review, user: alice, video: vertigo, rating: 1, created_at: 3.day.ago)
-      review3 = Fabricate(:review, user: alice, video: vertigo, rating: 2, created_at: 2.day.ago)
-
-      expect(vertigo.reviews).to eq [review1, review3, review2]
+      expect(vertigo.reviews).to eq [@review1, @review3, @review2]
     end
   end
 end

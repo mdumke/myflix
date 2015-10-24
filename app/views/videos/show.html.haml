@@ -37,9 +37,9 @@
           = f.submit 'Submit'
           %a(href="") Cancel
       %header
-        %h3= "User Reviews (#{@video.reviews.size})"
+        %h3= "User Reviews (#{@reviews.size})"
       %ul
-        - @video.reviews.each do |review|
+        - @reviews.each do |review|
           %article.review
             %li.row
               .col-sm-2
