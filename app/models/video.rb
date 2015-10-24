@@ -11,4 +11,10 @@ class Video < ActiveRecord::Base
     where('lower(title) like ?', "%#{ query.downcase }%")
       .order('created_at desc')
   end
+
+  # returns the rating-average from all reviews
+  def avg_rating
+    ratings = reviews.map(&:rating)  
+    (ratings.sum.to_f / ratings.count).round(1)
+  end
 end

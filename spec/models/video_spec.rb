@@ -50,5 +50,20 @@ describe Video do
       expect(Video.search_by_title('').to_a).to eq []
     end
   end
+
+  describe 'review related computations' do
+    let (:alice) { Fabricate(:user) }
+    let (:vertigo) { Fabricate(:video, title: 'Vertigo') }
+    
+    before do
+      [1, 1, 2].each do |rating|
+        Fabricate(:review, video: vertigo, user: alice, rating: rating)
+      end
+    end
+
+    it 'returns the average rating from all reviews with 1 dec precision' do
+      expect(vertigo.avg_rating).to eq 1.3
+    end
+  end
 end
 

@@ -84,3 +84,17 @@ User.create([
   { email: 'java@example.com', password: '123', full_name: 'Java Script' }
 ])
 
+puts 'create reviews'
+
+
+50.times do
+  Review.create(
+    {
+      rating: rand(5) + 1,
+      text: Faker::Lorem.words(20).join(' '),
+      video: Video.all.sample,
+      user: User.all.sample
+    }
+  )
+end
+
