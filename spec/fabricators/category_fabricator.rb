@@ -1,4 +1,4 @@
 Fabricator(:category) do
-  name Faker::Name.first_name 
+  name { Faker::Name.first_name }
 end
 
