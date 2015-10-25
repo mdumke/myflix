@@ -38,6 +38,18 @@ describe User, type: :model do
     expect(u.valid?).to be_truthy
   end
 
+  describe '#queue_length' do
+    let (:alice) { Fabricate(:user) }
+
+    before do
+      2.times { Fabricate(:queue_item, user: alice) }
+    end
+
+    it "returns the amount of the user's queue items" do
+      expect(alice.queue_length).to eq 2  
+    end
+  end
+
   context 'on queue item operations' do
     let (:alice) { Fabricate(:user) }
 
