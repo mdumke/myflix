@@ -34,7 +34,7 @@ describe QueueItemsController do
 
       it 'redirects to the queue-path after successful adding' do
         post :create, video_id: video.id
-        expect(response).to redirect_to my_queue_path 
+        expect(response).to redirect_to my_queue_path
       end
 
       it 'redirects to the videos path when video id is not valid' do
@@ -65,6 +65,13 @@ describe QueueItemsController do
       it 'sets the queue-position correctly' do
         post :create, video_id: video.id
         expect(QueueItem.first.queue_position).to eq 1
+      end
+
+      it 'does not add a video that is already in the queue' do
+        Fabricate(:queue_item, user: current_user, video: video)
+
+        post :create, video_id: video.id
+        expect(QueueItem.count).to eq 1
       end
     end
 

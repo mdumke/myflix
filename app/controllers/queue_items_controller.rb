@@ -7,10 +7,12 @@ class QueueItemsController < ApplicationController
   end
 
   def create
-    QueueItem.create(
-      queue_position: current_user.queue_length + 1,
-      video: @video,
-      user: current_user)
+    unless current_user.has_queued? @video
+      QueueItem.create(
+        queue_position: current_user.queue_length + 1,
+        video: @video,
+        user: current_user)
+    end
 
     redirect_to my_queue_path
   end

@@ -50,6 +50,22 @@ describe User, type: :model do
     end
   end
 
+  describe '#has_queued?' do
+    let (:alice) { Fabricate(:user) }
+    let (:video) { Fabricate(:video) }
+    let (:queue_item) { Fabricate(:queue_item) }
+
+    before { queue_item.update_attributes(user: alice, video: video) }
+
+    it 'returns true if video is already in the queue' do
+      expect(alice.has_queued?(video)).to be_truthy
+    end
+
+    it 'returns false if video is not already in the queue' do
+      expect(alice.has_queued?(Fabricate(:video))).to be_falsy
+    end
+  end
+
   context 'on queue item operations' do
     let (:alice) { Fabricate(:user) }
 

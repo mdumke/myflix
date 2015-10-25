@@ -11,5 +11,9 @@ class User < ActiveRecord::Base
   def queue_length
     queue_items.count
   end
+
+  def has_queued?(video)
+    queue_items.select { |qi| qi.video == video }.size > 0
+  end
 end
 
