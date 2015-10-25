@@ -84,3 +84,24 @@ User.create([
   { email: 'java@example.com', password: '123', full_name: 'Java Script' }
 ])
 
+puts 'create reviews'
+
+50.times do
+  Review.create(
+    {
+      rating: rand(5) + 1,
+      text: Faker::Lorem.words(20).join(' '),
+      video: Video.all.sample,
+      user: User.all.sample
+    }
+  )
+end
+
+puts 'create queue items'
+
+User.all.each_with_index do |user, user_index|
+  Video.limit(4).offset(user_index * 4).each_with_index do |video, video_index|
+    QueueItem.create(queue_position: video_index + 1, user: user, video: video) 
+  end
+end
+
