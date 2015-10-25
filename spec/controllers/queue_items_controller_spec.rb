@@ -82,5 +82,42 @@ describe QueueItemsController do
       end
     end
   end
+
+  describe 'DELETE destroy' do
+    let (:alice) { Fabricate(:user) }
+    let (:item1) { Fabricate(:queue_item) }
+    let (:item2) { Fabricate(:queue_item) }
+    let (:item3) { Fabricate(:queue_item) }
+
+    context 'with authenticated user' do
+      before do
+        session[:user_id] = alice.id
+
+        item1.update_attributes(queue_position: 2, user: alice)
+        item2.update_attributes(queue_position: 3, user: alice)
+        item3.update_attributes(queue_position: 1, user: alice)
+
+        delete :destroy, id: item1.id
+      end
+
+      it 'redirects to my-queue-path for authenticated users' do
+        expect(response).to redirect_to my_queue_path
+      end
+
+      it 'deletes a queue entry for authenticated users' do
+        expect(QueueItem.count).to eq 2
+      end
+
+      it 'fixes the counters for the remaining queue items' do
+        expect(item2.reload.queue_position).to eq 2
+        expect(item3.reload.queue_position).to eq 1
+      end
+    end
+
+    it 'redirects to root_path for unauthenticated users' do
+      delete :destroy, id: item1.id
+      expect(response).to redirect_to root_path
+    end
+  end
 end
 

@@ -17,6 +17,15 @@ class QueueItemsController < ApplicationController
     redirect_to my_queue_path
   end
 
+  def destroy
+    item = QueueItem.find(params[:id])
+    item.destroy if item
+
+    fix_item_counts
+
+    redirect_to my_queue_path
+  end
+
   private
 
   def set_video
@@ -26,6 +35,17 @@ class QueueItemsController < ApplicationController
       flash['error'] = 'Could not find this video'
       redirect_to videos_path
     end
+  end
+
+  def fix_item_counts
+    items = current_user.queue_items
+    return if items.empty?
+
+    items
+      .sort_by(&:queue_position)
+      .each_with_index do |item, idx|
+        item.update_attributes(queue_position: idx + 1)
+      end
   end
 end
 
