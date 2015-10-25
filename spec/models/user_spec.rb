@@ -37,5 +37,17 @@ describe User, type: :model do
 
     expect(u.valid?).to be_truthy
   end
+
+  context 'on queue item operations' do
+    let (:alice) { Fabricate(:user) }
+
+    it 'returns queue items ordered by queue-position' do
+      item1 = Fabricate(:queue_item, user: alice, queue_position: 2)
+      item2 = Fabricate(:queue_item, user: alice, queue_position: 3)
+      item3 = Fabricate(:queue_item, user: alice, queue_position: 1)
+
+      expect(alice.queue_items).to eq [item3, item1, item2]
+    end  
+  end
 end
 
