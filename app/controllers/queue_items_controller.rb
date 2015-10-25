@@ -19,7 +19,7 @@ class QueueItemsController < ApplicationController
 
   def destroy
     item = QueueItem.find(params[:id])
-    item.destroy if item
+    item.destroy if item && current_user.queue_items.include?(item)
 
     fix_item_counts
 

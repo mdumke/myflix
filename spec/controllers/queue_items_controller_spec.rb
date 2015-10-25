@@ -114,6 +114,17 @@ describe QueueItemsController do
       end
     end
 
+    it 'does not delete the queue item if it is not in the current users queue' do
+      alice = Fabricate(:user)
+      bob   = Fabricate(:user)
+      queue_item = Fabricate(:queue_item, user: bob)
+      session[:user_id] = alice.id
+
+      delete :destroy, id: queue_item.id
+
+      expect(QueueItem.count).to eq 1
+    end
+
     it 'redirects to root_path for unauthenticated users' do
       delete :destroy, id: item1.id
       expect(response).to redirect_to root_path
