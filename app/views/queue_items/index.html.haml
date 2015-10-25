@@ -19,14 +19,14 @@
                 %td
                   %input.form-control(type="text" value="#{queue_item.queue_position}")
                 %td
-                  = link_to queue_item.video.title, queue_item.video
+                  = link_to queue_item.video_title, queue_item.video
                 %td
                   = button_to "Play", nil, class: "btn btn-default"
                 %td
-                  - options = options_for_select([5, 4, 3, 2, 1].map { |n| [pluralize(n, 'Star'), n]}, 5)
+                  - options = options_for_select([5, 4, 3, 2, 1].map { |n| [pluralize(n, 'Star'), n]}, queue_item.rating)
                   = select_tag(:dummy_name, options) 
                 %td
-                  = link_to queue_item.video.category.name, queue_item.video.category
+                  = link_to queue_item.category_name, queue_item.category
                 %td
                   = link_to "", method: :post do
                     %i.glyphicon.glyphicon-remove
