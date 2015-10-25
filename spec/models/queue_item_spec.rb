@@ -4,7 +4,26 @@ describe QueueItem do
   it { should belong_to(:user) }
   it { should belong_to(:video) }
 
-  describe 'getting the rating for a video' do
+  describe '#video_title' do
+    it 'returns the title of the associated video' do
+      video = Fabricate(:video)
+      queue_item = Fabricate(:queue_item, video: video)
+      
+      expect(queue_item.video_title).to eq video.title
+    end
+  end
+
+  describe '#category' do
+    it 'returns the category of the associated video' do
+      comedies = Fabricate(:category, name: 'comedies')
+      video = Fabricate(:video, category: comedies)
+      queue_item = Fabricate(:queue_item, video: video)
+      
+      expect(queue_item.category).to eq comedies
+    end
+  end
+
+  describe '#rating' do
     let (:alice) { Fabricate(:user) }
     let (:video) { Fabricate(:video) }
 

@@ -2,21 +2,16 @@ class QueueItem < ActiveRecord::Base
   belongs_to :user
   belongs_to :video 
 
-  def video_title
-    video.title
-  end
+  delegate :category, to: :video
+  delegate :title, to: :video, prefix: :video
 
   def category_name
-    video.category.name
-  end
-
-  def category
-    video.category
+    category.name
   end
 
   def rating
     review = Review.where(user: user, video: video).first
-    review ? review.rating : nil
+    review.rating if review
   end
 end
 
