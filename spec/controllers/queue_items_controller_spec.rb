@@ -83,6 +83,79 @@ describe QueueItemsController do
     end
   end
 
+  describe 'PATCH update' do
+    context 'with authenticated user' do
+
+      let(:current_user) { Fabricate(:user) }
+      let(:item1) { Fabricate(:queue_item, queue_position: -1) }
+      let(:item2) { Fabricate(:queue_item, queue_position: -1) }
+
+      before do
+        session[:user_id] = current_user.id
+
+        item1.update_attributes(user: current_user)
+        item2.update_attributes(user: current_user)
+      end
+
+      context 'updating queue positions' do
+        it 'renders the form again for invalid positions' do
+          patch :update_queue, queue: [{ id: item1.id, position: 1.5 }]
+
+          expect(response).to render_template :index
+          expect(flash[:error]).not_to be_nil
+        end
+
+        it 'updates positions so that the lowest position is 1' do
+          patch :update_queue, queue: [
+            { id: item1.id, position: 2 },
+            { id: item2.id, position: 4 }
+          ]
+          expect(QueueItem.find(item1.id).queue_position).to eq 1
+        end
+
+        it 'reorders positions so that the lowest position is 1' do
+          patch :update_queue, queue: [
+            { id: item1.id, position: 3 },
+            { id: item2.id, position: 2 }
+          ]
+          expect(QueueItem.find(item2.id).queue_position).to eq 1
+        end
+
+        it 'reorders so that all positions are contiguous' do
+          patch :update_queue, queue: [
+            { id: item1.id, position: 3 },
+            { id: item2.id, position: 2 }
+          ]
+          expect(QueueItem.find(item1.id).queue_position).to eq 2
+          expect(QueueItem.find(item2.id).queue_position).to eq 1
+        end
+
+        it 'updates all positions in a transaction' do
+          patch :update_queue, queue: [
+            { id: item1.id, position: 3 },
+            { id: item2.id, position: 2.5 }
+          ]
+          expect(QueueItem.find(item1.id).queue_position).to eq -1
+          expect(QueueItem.find(item2.id).queue_position).to eq -1
+        end
+
+        it 'redirects to my_queue after successful update' do
+          patch :update_queue, queue: [
+            { id: item1.id, position: 1 },
+            { id: item2.id, position: 2 }
+          ]
+          expect(response).to redirect_to my_queue_path
+          expect(flash['notice']).not_to be_nil
+        end
+      end
+    end
+
+    context 'with unauthenticated user' do
+      it 'redirects to the root_path'
+      it 'sets the error-flash'
+    end
+  end
+
   describe 'DELETE destroy' do
     let (:alice) { Fabricate(:user) }
     let (:item1) { Fabricate(:queue_item) }

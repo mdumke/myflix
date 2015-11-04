@@ -26,6 +26,20 @@ class QueueItemsController < ApplicationController
     redirect_to my_queue_path
   end
 
+  def update_queue
+    params[:queue].each do |queue_item|
+      item = QueueItem.find_by_id(queue_item[:id])
+      next unless item
+
+      item.update_attributes(queue_position: queue_item[:position])
+    end
+
+    fix_item_counts
+
+    flash['error'] = 'Your changes could not be saved'
+    render 'index'
+  end
+
   private
 
   def set_video
