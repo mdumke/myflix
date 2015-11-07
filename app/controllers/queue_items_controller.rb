@@ -22,22 +22,17 @@ class QueueItemsController < ApplicationController
     item.destroy if item && current_user.queue_items.include?(item)
 
     fix_item_counts
-
     redirect_to my_queue_path
   end
 
   def update_queue
-    params[:queue].each do |queue_item|
-      item = QueueItem.find_by_id(queue_item[:id])
-      next unless item
-
-      item.update_attributes(queue_position: queue_item[:position])
+    begin
+      update_queue_positions
+    rescue ActiveRecord::RecordInvalid
+      flash['error'] = 'Queue update failed'
     end
 
-    fix_item_counts
-
-    flash['error'] = 'Your changes could not be saved'
-    render 'index'
+    redirect_to my_queue_path
   end
 
   private
@@ -51,12 +46,30 @@ class QueueItemsController < ApplicationController
     end
   end
 
-  def fix_item_counts
-    items = current_user.queue_items
-    return if items.empty?
+  def update_queue_positions
+    return unless valid_queue_item_data?
 
-    items
-      .sort_by(&:queue_position)
+    ActiveRecord::Base.transaction do
+      params[:queue].each do |item_data|
+        item = QueueItem.find_by_id(item_data[:id])
+
+        unless item.update_attributes!(queue_position: item_data[:position])
+          fail(ActiveRecord::RecordInvalid)
+        end
+      end
+    end
+
+    fix_item_counts
+    flash['notice'] = 'Successfully updated My Queue'
+  end
+
+  def valid_queue_item_data?
+    params[:queue].all? { |item_data| item_data[:id] }
+  end
+
+  def fix_item_counts
+    current_user
+      .queue_items
       .each_with_index do |item, idx|
         item.update_attributes(queue_position: idx + 1)
       end

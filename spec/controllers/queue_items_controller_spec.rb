@@ -98,10 +98,15 @@ describe QueueItemsController do
       end
 
       context 'updating queue positions' do
-        it 'renders the form again for invalid positions' do
+        it 'redirects to my_queue_path for invalid positions' do
           patch :update_queue, queue: [{ id: item1.id, position: 1.5 }]
 
-          expect(response).to render_template :index
+          expect(response).to redirect_to my_queue_path
+        end
+
+        it 'sets the flash-error for invalid positions' do
+          patch :update_queue, queue: [{ id: item1.id, position: 1.5 }]
+
           expect(flash[:error]).not_to be_nil
         end
 
@@ -147,12 +152,36 @@ describe QueueItemsController do
           expect(response).to redirect_to my_queue_path
           expect(flash['notice']).not_to be_nil
         end
+
+        it 'does not update queue when position-data is incomplete' do
+          patch :update_queue, queue: [
+            { id: item1.id, position: 1 },
+            { id: item2.id }
+          ]
+          expect(item1.reload.queue_position).to eq -1
+        end
+
+        it 'does not update queue when id-data is incomplete' do
+          patch :update_queue, queue: [
+            { id: item1.id, position: 1 },
+            { position: 2}
+          ]
+          expect(item1.reload.queue_position).to eq -1
+        end
+
+        it 'sets the error-flash for incomplete request-information' do
+          patch :update_queue, queue: [
+            { id: item1.id, position: 1 },
+            { id: item2.id }
+          ]
+          expect(flash['error']).to be_present
+        end
       end
     end
 
-    context 'with unauthenticated user' do
-      it 'redirects to the root_path'
-      it 'sets the error-flash'
+    it 'redirects unauthenticated users to the root_path' do
+      patch :update_queue
+      expect(response).to redirect_to root_path
     end
   end
 
