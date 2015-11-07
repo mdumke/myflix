@@ -27,7 +27,11 @@ class QueueItemsController < ApplicationController
 
   def update_queue
     begin
-      update_queue_positions
+      if valid_queue_item_data?
+        update_queue_positions
+        fix_item_counts
+        flash['notice'] = 'Successfully updated My Queue'
+      end
     rescue ActiveRecord::RecordInvalid
       flash['error'] = 'Queue update failed'
     end
@@ -58,9 +62,6 @@ class QueueItemsController < ApplicationController
         end
       end
     end
-
-    fix_item_counts
-    flash['notice'] = 'Successfully updated My Queue'
   end
 
   def valid_queue_item_data?
