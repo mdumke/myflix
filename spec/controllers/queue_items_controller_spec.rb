@@ -150,7 +150,6 @@ describe QueueItemsController do
             { id: item2.id, position: 2 }
           ]
           expect(response).to redirect_to my_queue_path
-          expect(flash['notice']).not_to be_nil
         end
 
         it 'does not update queue when position-data is incomplete' do
@@ -175,6 +174,12 @@ describe QueueItemsController do
             { id: item2.id }
           ]
           expect(flash['error']).to be_present
+        end
+
+        it 'does not update queue items that do not belong the current user' do
+          item1.update_attributes(user_id: current_user.id + 1)
+          patch :update_queue, queue: [{ id: item1.id, position: 1 }]
+          expect(item1.reload.queue_position).to eq -1
         end
       end
     end
