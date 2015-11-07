@@ -15,5 +15,11 @@ class User < ActiveRecord::Base
   def has_queued?(video)
     queue_items.select { |qi| qi.video == video }.size > 0
   end
+
+  def normalize_queue_item_positions
+    queue_items.each_with_index do |item, idx|
+      item.update_attributes(queue_position: idx + 1)
+    end
+  end
 end
 

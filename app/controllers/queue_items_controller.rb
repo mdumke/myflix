@@ -21,7 +21,7 @@ class QueueItemsController < ApplicationController
     item = QueueItem.find(params[:id])
     item.destroy if item && current_user.queue_items.include?(item)
 
-    fix_item_counts
+    current_user.normalize_queue_item_positions
     redirect_to my_queue_path
   end
 
@@ -29,7 +29,7 @@ class QueueItemsController < ApplicationController
     begin
       if valid_queue_item_data?
         update_queue_positions
-        fix_item_counts
+        current_user.normalize_queue_item_positions
         flash['notice'] = 'Successfully updated My Queue'
       end
     rescue ActiveRecord::RecordInvalid
@@ -56,6 +56,7 @@ class QueueItemsController < ApplicationController
     ActiveRecord::Base.transaction do
       params[:queue].each do |item_data|
         item = QueueItem.find_by_id(item_data[:id])
+        next unless item.user == current_user
 
         unless item.update_attributes!(queue_position: item_data[:position])
           fail(ActiveRecord::RecordInvalid)
@@ -66,14 +67,6 @@ class QueueItemsController < ApplicationController
 
   def valid_queue_item_data?
     params[:queue].all? { |item_data| item_data[:id] }
-  end
-
-  def fix_item_counts
-    current_user
-      .queue_items
-      .each_with_index do |item, idx|
-        item.update_attributes(queue_position: idx + 1)
-      end
   end
 end
 
