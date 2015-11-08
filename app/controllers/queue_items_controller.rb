@@ -27,12 +27,13 @@ class QueueItemsController < ApplicationController
 
   def update_queue
     begin
-      if valid_queue_item_data?
-        update_queue_positions
-        current_user.normalize_queue_item_positions
-        flash['notice'] = 'Successfully updated My Queue'
-      end
+      fail(StandardError) unless valid_queue_item_data?
+      update_queue_items
+      current_user.normalize_queue_item_positions
+      flash['notice'] = 'Successfully updated My Queue'
     rescue ActiveRecord::RecordInvalid
+      flash['error'] = 'Queue update failed'
+    rescue StandardError
       flash['error'] = 'Queue update failed'
     end
 
@@ -50,23 +51,22 @@ class QueueItemsController < ApplicationController
     end
   end
 
-  def update_queue_positions
-    return unless valid_queue_item_data?
-
+  def update_queue_items
     ActiveRecord::Base.transaction do
       params[:queue].each do |item_data|
         item = QueueItem.find_by_id(item_data[:id])
         next unless item.user == current_user
 
-        unless item.update_attributes!(queue_position: item_data[:position])
-          fail(ActiveRecord::RecordInvalid)
-        end
+        item.update_attributes!(queue_position: item_data[:position])
+        item.update_rating(item_data[:rating])
       end
     end
   end
 
   def valid_queue_item_data?
-    params[:queue].all? { |item_data| item_data[:id] }
+    params[:queue].all? do |item_data|
+      item_data[:id] && item_data[:position] && item_data[:rating]
+    end
   end
 end
 

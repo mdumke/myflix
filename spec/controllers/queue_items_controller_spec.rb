@@ -87,49 +87,57 @@ describe QueueItemsController do
     context 'with authenticated user' do
 
       let(:current_user) { Fabricate(:user) }
+      let(:video1) { Fabricate(:video) }
+      let(:video2) { Fabricate(:video) }
       let(:item1) { Fabricate(:queue_item, queue_position: -1) }
       let(:item2) { Fabricate(:queue_item, queue_position: -1) }
 
       before do
         session[:user_id] = current_user.id
 
-        item1.update_attributes(user: current_user)
-        item2.update_attributes(user: current_user)
+        item1.update_attributes(user: current_user, video: video1)
+        item2.update_attributes(user: current_user, video: video2)
+
+        item1.update_rating(1)
+        item2.update_rating(2)
       end
 
       context 'updating queue positions' do
         it 'redirects to my_queue_path for invalid positions' do
-          patch :update_queue, queue: [{ id: item1.id, position: 1.5 }]
+          patch :update_queue, queue: [
+            {id: item1.id, position: 1.5, rating: 1}]
 
           expect(response).to redirect_to my_queue_path
         end
 
         it 'sets the flash-error for invalid positions' do
-          patch :update_queue, queue: [{ id: item1.id, position: 1.5 }]
+          patch :update_queue, queue: [
+            {id: item1.id, position: 1.5, rating: 1}
+          ]
 
           expect(flash[:error]).not_to be_nil
         end
 
         it 'updates positions so that the lowest position is 1' do
           patch :update_queue, queue: [
-            { id: item1.id, position: 2 },
-            { id: item2.id, position: 4 }
+            {id: item1.id, position: 2, rating: 1},
+            {id: item2.id, position: 4, rating: 1}
           ]
           expect(QueueItem.find(item1.id).queue_position).to eq 1
         end
 
         it 'reorders positions so that the lowest position is 1' do
           patch :update_queue, queue: [
-            { id: item1.id, position: 3 },
-            { id: item2.id, position: 2 }
+            {id: item1.id, position: 3, rating: 1},
+            {id: item2.id, position: 2, rating: 1}
           ]
           expect(QueueItem.find(item2.id).queue_position).to eq 1
         end
 
         it 'reorders so that all positions are contiguous' do
           patch :update_queue, queue: [
-            { id: item1.id, position: 3 },
-            { id: item2.id, position: 2 }
+            {id: item1.id, position: 3, rating: 1},
+            {id: item2.id, position: 2, rating: 1}
           ]
           expect(QueueItem.find(item1.id).queue_position).to eq 2
           expect(QueueItem.find(item2.id).queue_position).to eq 1
@@ -137,8 +145,8 @@ describe QueueItemsController do
 
         it 'updates all positions in a transaction' do
           patch :update_queue, queue: [
-            { id: item1.id, position: 3 },
-            { id: item2.id, position: 2.5 }
+            {id: item1.id, position: 3, rating: 1},
+            {id: item2.id, position: 2.5, rating: 1}
           ]
           expect(QueueItem.find(item1.id).queue_position).to eq -1
           expect(QueueItem.find(item2.id).queue_position).to eq -1
@@ -146,40 +154,73 @@ describe QueueItemsController do
 
         it 'redirects to my_queue after successful update' do
           patch :update_queue, queue: [
-            { id: item1.id, position: 1 },
-            { id: item2.id, position: 2 }
+            {id: item1.id, position: 1, rating: 1},
+            {id: item2.id, position: 2, rating: 1}
           ]
           expect(response).to redirect_to my_queue_path
         end
 
         it 'does not update queue when position-data is incomplete' do
           patch :update_queue, queue: [
-            { id: item1.id, position: 1 },
-            { id: item2.id }
+            {id: item1.id, position: 1, rating: 1},
+            {id: item2.id, rating: 1}
           ]
           expect(item1.reload.queue_position).to eq -1
         end
 
         it 'does not update queue when id-data is incomplete' do
           patch :update_queue, queue: [
-            { id: item1.id, position: 1 },
-            { position: 2}
+            {id: item1.id, position: 1, rating: 1},
+            {position: 2, rating: 1}
           ]
           expect(item1.reload.queue_position).to eq -1
         end
 
         it 'sets the error-flash for incomplete request-information' do
           patch :update_queue, queue: [
-            { id: item1.id, position: 1 },
-            { id: item2.id }
+            {id: item1.id, position: 1, rating: 1},
+            {id: item2.id, rating: 1}
           ]
           expect(flash['error']).to be_present
         end
 
         it 'does not update queue items that do not belong the current user' do
           item1.update_attributes(user_id: current_user.id + 1)
-          patch :update_queue, queue: [{ id: item1.id, position: 1 }]
+          patch :update_queue, queue: [
+            {id: item1.id, position: 1, rating: 1}
+          ]
           expect(item1.reload.queue_position).to eq -1
+        end
+      end
+
+      context 'changing the rating on videos' do
+        it 'updates a single video' do
+          patch :update_queue, queue: [
+            {id: item1.id, rating: 3, position: 1}
+          ]
+          expect(item1.reload.rating).to eq 3
+        end
+
+        it 'does not update when data is invalid' do
+          patch :update_queue, queue: [
+            {id: item1.id, rating: 3}
+          ]
+          expect(item1.reload.rating).to eq 1
+        end
+
+        it 'sets the flash-error when data is invalid' do
+          patch :update_queue, queue: [
+            {id: item1.id, rating: 3}
+          ]
+          expect(flash['error']).to be_present
+        end
+
+        it 'only changes the videos that actually belong to the user' do
+          session[:user_id] = current_user.id + 1
+          patch :update_queue, queue: [
+            {id: item1.id, rating: 3, position: 1}
+          ]
+          expect(item1.reload.rating).to eq 1
         end
       end
     end
