@@ -53,6 +53,22 @@ describe QueueItem do
       end
     end
 
+    context '#update_rating' do
+      it 'updates the corresponding review' do
+        review = Fabricate(:review, user: alice, video: video)
+        queue_item = Fabricate(:queue_item, user: alice, video: video)
+        queue_item.update_rating(4)
+        expect(review.reload.rating).to eq 4
+      end
+
+      it 'raises RecordInvalid-error when update fails' do
+        review = Fabricate(:review, user: alice, video: video)
+        queue_item = Fabricate(:queue_item, user: alice, video: video)
+
+        expect(queue_item.update_rating(-1)).to raise_exception(ActiveRecord::RecordInvalid)
+      end
+    end
+
     context 'user has not yet rated a video' do
       it 'returns nil' do
         queue_item = Fabricate(:queue_item, user: alice, video: video)

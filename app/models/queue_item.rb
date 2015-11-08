@@ -1,6 +1,6 @@
 class QueueItem < ActiveRecord::Base
   belongs_to :user
-  belongs_to :video 
+  belongs_to :video
 
   validates :queue_position, numericality: { only_integer: true }
 
@@ -12,8 +12,23 @@ class QueueItem < ActiveRecord::Base
   end
 
   def rating
-    review = Review.where(user: user, video: video).first
     review.rating if review
+  end
+
+  def update_rating(new_rating)
+    rev = review || Review.create(user: user, video: video)
+    rev.rating = new_rating
+
+    if rev.valid? || !rev.errors.keys.include?(:rating)
+      rev.update_attribute(:rating, new_rating)
+      return true
+    end
+
+    raise(ActiveRecord::RecordInvalid)
+  end
+
+  def review
+    @review ||= Review.where(user: user, video: video).first
   end
 end
 
