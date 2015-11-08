@@ -15,11 +15,12 @@ class QueueItem < ActiveRecord::Base
     review.rating if review
   end
 
-  def update_rating(new_rating)
+  def rating=(new_rating)
     rev = review || Review.create(user: user, video: video)
     rev.rating = new_rating
+    rev.rating = nil if new_rating == ''
 
-    if rev.valid? || !rev.errors.keys.include?(:rating)
+    if rev.valid? || !rev.errors.keys.include?(:rating) || rev.rating.nil?
       rev.update_attribute(:rating, new_rating)
       return true
     end

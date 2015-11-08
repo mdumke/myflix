@@ -53,19 +53,34 @@ describe QueueItem do
       end
     end
 
-    context '#update_rating' do
+    context '#rating=' do
       it 'updates the corresponding review' do
         review = Fabricate(:review, user: alice, video: video)
         queue_item = Fabricate(:queue_item, user: alice, video: video)
-        queue_item.update_rating(4)
+        queue_item.rating = 4
         expect(review.reload.rating).to eq 4
       end
 
-      it 'raises RecordInvalid-error when update fails' do
+      it 'updates the rating to nil when nil is given' do
+        review = Fabricate(:review, user: alice, video: video, rating: 3)
+        queue_item = Fabricate(:queue_item, user: alice, video: video)
+        queue_item.rating = nil
+        expect(review.reload.rating).to eq nil
+      end
+
+      it 'updates the rating to nil when empty string is given' do
+        review = Fabricate(:review, user: alice, video: video, rating: 3)
+        queue_item = Fabricate(:queue_item, user: alice, video: video)
+        queue_item.rating = ''
+        expect(review.reload.rating).to eq nil
+      end
+
+      it 'returns nil when update fails' do
         review = Fabricate(:review, user: alice, video: video)
         queue_item = Fabricate(:queue_item, user: alice, video: video)
+        result = queue_item.send(:rating=, -1)
 
-        expect(queue_item.update_rating(-1)).to be_nil
+        expect(result).to be_nil
       end
     end
 
