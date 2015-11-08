@@ -98,8 +98,8 @@ describe QueueItemsController do
         item1.update_attributes(user: current_user, video: video1)
         item2.update_attributes(user: current_user, video: video2)
 
-        item1.update_rating(1)
-        item2.update_rating(2)
+        item1.rating = 1
+        item2.rating = 2
       end
 
       context 'updating queue positions' do
@@ -199,6 +199,13 @@ describe QueueItemsController do
             {id: item1.id, rating: 3, position: 1}
           ]
           expect(item1.reload.rating).to eq 3
+        end
+
+        it 'updates a single video to nil for empty string' do
+          patch :update_queue, queue: [
+            {id: item1.id, rating: '', position: 1}
+          ]
+          expect(item1.reload.rating).to be_nil
         end
 
         it 'does not update when data is invalid' do

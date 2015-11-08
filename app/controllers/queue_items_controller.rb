@@ -57,8 +57,9 @@ class QueueItemsController < ApplicationController
         item = QueueItem.find_by_id(item_data[:id])
         next unless item.user == current_user
 
-        item.update_attributes!(queue_position: item_data[:position])
-        item.update_rating(item_data[:rating])
+        item.update_attributes!(
+          queue_position: item_data[:position],
+          rating: item_data[:rating])
       end
     end
   end
@@ -69,4 +70,3 @@ class QueueItemsController < ApplicationController
     end
   end
 end
-
