@@ -13,7 +13,7 @@ describe Video do
         title: 'Family Guy',
         description: 'Explicit cartoon',
         created_at: 1.day.ago)
-      
+
       @family_friend = Video.create(
         title: 'Family Friend',
         description: 'Wildly overrated movie')
@@ -63,6 +63,11 @@ describe Video do
 
     it 'returns the average rating from all reviews with 1 dec precision' do
       expect(vertigo.avg_rating).to eq 1.3
+    end
+
+    it 'returns the average reviews-rating and igores nil-ratings' do
+      @review2.update_attribute(:rating, nil)
+      expect(vertigo.avg_rating).to eq 1.5
     end
 
     it 'returns the associated reviews in reverse order of creation' do
