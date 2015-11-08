@@ -27,7 +27,7 @@
                     = link_to "Play", nil, class: "btn btn-default"
                   %td
                     - options = options_for_select([5, 4, 3, 2, 1].map { |n| [pluralize(n, 'Star'), n] }, queue_item.rating)
-                    = select_tag(:dummy_name, options)
+                    = select_tag('queue[][rating]', options)
                   %td
                     = link_to queue_item.category_name, queue_item.category
                   %td
