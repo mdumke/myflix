@@ -41,7 +41,7 @@ describe QueueItem do
         review1 = Fabricate(:review, rating: 3, text: 'abc', user: alice, video: video)
         queue_item = Fabricate(:queue_item, user: alice, video: video)
 
-        expect(queue_item.rating).to eq 3 
+        expect(queue_item.rating).to eq 3
       end
 
       it 'returns the first rating if there are many' do
@@ -49,7 +49,7 @@ describe QueueItem do
         review2 = Fabricate(:review, rating: 3, text: 'abc', user: alice, video: video)
         queue_item = Fabricate(:queue_item, user: alice, video: video)
 
-        expect(queue_item.rating).to eq 3 
+        expect(queue_item.rating).to eq 3
       end
     end
 
@@ -65,7 +65,7 @@ describe QueueItem do
         review = Fabricate(:review, user: alice, video: video)
         queue_item = Fabricate(:queue_item, user: alice, video: video)
 
-        expect(queue_item.update_rating(-1)).to raise_exception(ActiveRecord::RecordInvalid)
+        expect(queue_item.update_rating(-1)).to be_nil
       end
     end
 

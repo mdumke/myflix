@@ -23,8 +23,6 @@ class QueueItem < ActiveRecord::Base
       rev.update_attribute(:rating, new_rating)
       return true
     end
-
-    raise(ActiveRecord::RecordInvalid)
   end
 
   def review
