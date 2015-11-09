@@ -20,13 +20,13 @@ describe UsersController do
       end
 
       it 'redirects to videos path' do
-        expect(response).to redirect_to videos_path 
+        expect(response).to redirect_to videos_path
       end
     end
 
     context 'with invalid input' do
       before do
-        post :create, user: {full_name: '', password: '123'} 
+        post :create, user: {full_name: '', password: '123'}
       end
 
       it 'does not create a new user' do
@@ -34,7 +34,7 @@ describe UsersController do
       end
 
       it 'renders the new view' do
-        expect(response).to render_template :new 
+        expect(response).to render_template :new
       end
 
       it 'sets @user' do

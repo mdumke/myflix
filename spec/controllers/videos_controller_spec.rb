@@ -3,14 +3,13 @@ require 'spec_helper'
 describe VideosController do
   describe 'GET index' do
     it 'sets the @categories variable for authenticated users' do
-      session[:user_id] = Fabricate(:user).id
+      set_current_user
       get :index
       expect(assigns(:categories)).to_not be_nil
     end
 
-    it 'redirects to front page for unauthenticated users' do
-      get :index
-      expect(response).to redirect_to root_path
+    it_behaves_like 'requires authenticated user' do
+      let(:action) { get :index }
     end
   end
 
@@ -19,7 +18,7 @@ describe VideosController do
 
     context 'for authenticated users' do
       before do
-        session[:user_id] = Fabricate(:user).id
+        set_current_user
         get :show, id: video.id
       end
 
@@ -36,11 +35,8 @@ describe VideosController do
       end
     end
 
-    context 'for unauthenticated users' do
-      it 'redirects to the sign in page' do
-        get :show, id: video.id
-        expect(response).to redirect_to root_path
-      end
+    it_behaves_like 'requires authenticated user' do
+      let(:action) { get :show, id: video.id }
     end
   end
 
@@ -49,22 +45,20 @@ describe VideosController do
     let(:godfather) { Fabricate(:video, title: 'godfather') }
 
     it 'sets @videos for authenticated users' do
-      session[:user_id] = Fabricate(:user).id
+      set_current_user
       get :search, q: 'tooth'
       expect(assigns(:videos)).to eq([dogtooth])
     end
 
-    it 'redirects unauthenticated users to sign in page' do
-      get :search, q: 'tooth'
-      expect(response).to redirect_to root_path
+    it_behaves_like 'requires authenticated user' do
+      let(:action) { get :search, q: 'tooth' }
     end
   end
 
   describe 'POST review' do
-    let (:alice) { Fabricate(:user) }
     let (:modern_times) { Fabricate(:video, title: 'Modern Times') }
 
-    before { session[:user_id] = alice.id }
+    before { set_current_user }
 
     context 'with valid review-data' do
       before do
@@ -76,7 +70,7 @@ describe VideosController do
       end
 
       it 'creates the review for the current user' do
-        expect(Review.first.user).to eq alice
+        expect(Review.first.user).to eq current_user
       end
 
       it 'redirects to the video show page' do
