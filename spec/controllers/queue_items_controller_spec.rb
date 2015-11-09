@@ -89,14 +89,22 @@ describe QueueItemsController do
       let(:current_user) { Fabricate(:user) }
       let(:video1) { Fabricate(:video) }
       let(:video2) { Fabricate(:video) }
-      let(:item1) { Fabricate(:queue_item, queue_position: -1) }
-      let(:item2) { Fabricate(:queue_item, queue_position: -1) }
+      let(:item1) do
+        Fabricate(:queue_item,
+                  queue_position: -1,
+                  user: current_user,
+                  video: video1)
+      end
+
+      let(:item2) do
+        Fabricate(:queue_item,
+                  queue_position: -1,
+                  user: current_user,
+                  video: video2)
+      end
 
       before do
         session[:user_id] = current_user.id
-
-        item1.update_attributes(user: current_user, video: video1)
-        item2.update_attributes(user: current_user, video: video2)
 
         item1.rating = 1
         item2.rating = 2
@@ -115,15 +123,7 @@ describe QueueItemsController do
             {id: item1.id, position: 1.5, rating: 1}
           ]
 
-          expect(flash[:error]).not_to be_nil
-        end
-
-        it 'updates positions so that the lowest position is 1' do
-          patch :update_queue, queue: [
-            {id: item1.id, position: 2, rating: 1},
-            {id: item2.id, position: 4, rating: 1}
-          ]
-          expect(QueueItem.find(item1.id).queue_position).to eq 1
+          expect(flash[:error]).to be_present
         end
 
         it 'reorders positions so that the lowest position is 1' do

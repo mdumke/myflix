@@ -16,7 +16,7 @@ class Video < ActiveRecord::Base
 
   # returns the rating-average from all reviews
   def avg_rating
-    ratings = reviews.map(&:rating).reject(&:nil?)
+    ratings = reviews.map(&:rating).compact
     (ratings.sum.to_f / ratings.count).round(1)
   end
 end
