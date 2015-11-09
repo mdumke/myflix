@@ -1,4 +1,6 @@
 class QueueItemsController < ApplicationController
+  InvalidQueueItemData = Class.new(StandardError)
+
   before_action :require_user
   before_action :set_video, only: [:create]
 
@@ -27,13 +29,13 @@ class QueueItemsController < ApplicationController
 
   def update_queue
     begin
-      fail(StandardError) unless valid_queue_item_data?
+      fail(InvalidQueueItemData) unless valid_queue_item_data?
       update_queue_items
       current_user.normalize_queue_item_positions
       flash['notice'] = 'Successfully updated My Queue'
     rescue ActiveRecord::RecordInvalid
       flash['error'] = 'Queue update failed'
-    rescue StandardError
+    rescue InvalidQueueItemData
       flash['error'] = 'Queue update failed'
     end
 
