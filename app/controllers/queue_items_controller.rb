@@ -23,7 +23,7 @@ class QueueItemsController < ApplicationController
     item = QueueItem.find(params[:id])
     item.destroy if item && current_user.queue_items.include?(item)
 
-    current_user.normalize_queue_item_positions
+    current_user.normalize_queue_item_positions!
     redirect_to my_queue_path
   end
 
@@ -31,7 +31,7 @@ class QueueItemsController < ApplicationController
     begin
       fail(InvalidQueueItemData) unless valid_queue_item_data?
       update_queue_items
-      current_user.normalize_queue_item_positions
+      current_user.normalize_queue_item_positions!
       flash['notice'] = 'Successfully updated My Queue'
     rescue ActiveRecord::RecordInvalid
       flash['error'] = 'Queue update failed'
