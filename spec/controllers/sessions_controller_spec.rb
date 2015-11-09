@@ -2,28 +2,28 @@ require 'spec_helper'
 
 describe SessionsController do
   describe 'GET front' do
+    it 'redirects to the home-path for authenticated users' do
+      set_current_user
+      get :front
+      expect(response).to redirect_to home_path
+    end
+
     it 'renders the front template for unauthenticated users' do
       get :front
       expect(response).to render_template :front
     end
-
-    it 'redirects to the home-path for authenticated users' do
-      session[:user_id] = Fabricate(:user).id
-      get :front
-      expect(response).to redirect_to home_path
-    end
   end
 
   describe 'GET new' do
+    it 'redirects to the home-path for authenticated users' do
+      set_current_user
+      get :new
+      expect(response).to redirect_to home_path
+    end
+
     it 'renders the new template for unauthenticated users' do
       get :new
       expect(response).to render_template :new
-    end
-
-    it 'redirects to the home-path for authenticated users' do
-      session[:user_id] = Fabricate(:user).id
-      get :new
-      expect(response).to redirect_to home_path
     end
   end
 
@@ -32,7 +32,7 @@ describe SessionsController do
 
     context 'with valid credentials' do
       before do
-        post :create, email: alice.email, password: alice.password 
+        post :create, email: alice.email, password: alice.password
       end
 
       it 'puts the user in the session' do
@@ -40,7 +40,7 @@ describe SessionsController do
       end
 
       it 'redirects to the videos-path' do
-        expect(response).to redirect_to videos_path 
+        expect(response).to redirect_to videos_path
       end
 
       it 'sets the notice' do
@@ -69,7 +69,7 @@ describe SessionsController do
 
   describe 'GET destroy' do
     before do
-      session[:user_id] = Fabricate(:user).id
+      set_current_user
       get :destroy
     end
 
