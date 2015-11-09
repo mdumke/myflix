@@ -22,7 +22,7 @@ class QueueItem < ActiveRecord::Base
 
     if rev.valid? || !rev.errors.keys.include?(:rating) || rev.rating.nil?
       rev.update_attribute(:rating, new_rating)
-      return true
+      true
     end
   end
 
