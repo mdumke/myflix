@@ -4,10 +4,11 @@ class User < ActiveRecord::Base
   has_many :reviews, -> { order('created_at desc') }
   has_many :queue_items, -> { order('queue_position') }
   has_many :followings
-  has_many :followers, through: :followings, source: :user
+  has_many :followers, through: :followings, class_name: 'User',
+           foreign_key: 'follower_id'
   has_many :inverse_followings, class_name: 'Following',
            foreign_key: 'follower_id'
-  has_many :followed, through: :inverse_followings, source: :user
+  has_many :people, through: :inverse_followings, source: :user
 
   validates :full_name, presence: true
   validates :email, presence: true, uniqueness: true
