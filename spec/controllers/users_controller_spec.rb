@@ -1,6 +1,44 @@
 require 'spec_helper'
 
 describe UsersController do
+  describe 'GET show' do
+    before { set_current_user }
+
+    it 'sets @user' do
+      get :show, id: current_user.id
+      expect(assigns(:user)).to eq(current_user)
+    end
+
+    it 'redirects to home path if a user is not found' do
+      get :show, id: current_user.id + 10
+      expect(response).to redirect_to home_path
+    end
+
+    it 'sets a flash error if a user is not found' do
+      get :show, id: current_user.id + 10
+      expect(flash[:error]).to be_present
+    end
+
+    it 'sets @videos' do
+      anne = Fabricate(:user)
+      video = Fabricate(:video)
+      qi = Fabricate(:queue_item, video: video, user: anne)
+      get :show, id: anne.id
+      expect(assigns(:videos)).to eq([video])
+    end
+
+    it 'sets @reviews' do
+      anne = Fabricate(:user)
+      review = Fabricate(:review, user: anne)
+      get :show, id: anne.id
+      expect(assigns(:reviews)).to eq([review])
+    end
+
+    it_behaves_like 'requires authenticated user' do
+      let(:action) { get :show, id: 1 }
+    end
+  end
+
   describe 'GET new' do
     it 'sets @user' do
       get :new
