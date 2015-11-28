@@ -84,9 +84,19 @@ User.create([
   { email: 'java@example.com', password: '123', full_name: 'Java Script' }
 ])
 
+puts 'create followings'
+
+Following.create([
+  { user: User.first, follower: User.second },
+  { user: User.first, follower: User.third },
+  { user: User.second, follower: User.first },
+  { user: User.second, follower: User.third },
+  { user: User.third, follower: User.second }
+])
+
 puts 'create reviews'
 
-50.times do
+30.times do
   Review.create(
     {
       rating: rand(5) + 1,
