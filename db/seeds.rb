@@ -84,14 +84,14 @@ User.create([
   { email: 'java@example.com', password: '123', full_name: 'Java Script' }
 ])
 
-puts 'create followings'
+puts 'create relationships'
 
-Following.create([
-  { user: User.first, follower: User.second },
-  { user: User.first, follower: User.third },
-  { user: User.second, follower: User.first },
-  { user: User.second, follower: User.third },
-  { user: User.third, follower: User.second }
+Relationship.create([
+  { leader: User.first, follower: User.second },
+  { leader: User.first, follower: User.third },
+  { leader: User.second, follower: User.first },
+  { leader: User.second, follower: User.third },
+  { leader: User.third, follower: User.second }
 ])
 
 puts 'create reviews'

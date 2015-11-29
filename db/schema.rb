@@ -22,17 +22,17 @@ ActiveRecord::Schema.define(version: 20151128204306) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "followings", force: true do |t|
-    t.integer "user_id"
-    t.integer "follower_id"
-  end
-
   create_table "queue_items", force: true do |t|
     t.integer  "queue_position"
     t.integer  "video_id"
     t.integer  "user_id"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
+  end
+
+  create_table "relationships", force: true do |t|
+    t.integer "leader_id"
+    t.integer "follower_id"
   end
 
   create_table "reviews", force: true do |t|

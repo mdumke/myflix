@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe FollowingsController do
+describe RelationshipsController do
   describe 'GET index' do
     it 'sets @people' do
       alice = Fabricate(:user)
