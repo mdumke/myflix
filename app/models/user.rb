@@ -22,6 +22,14 @@ class User < ActiveRecord::Base
     queue_items.select { |qi| qi.video == video }.size > 0
   end
 
+  def is_following?(user)
+    leaders.include?(user)
+  end
+
+  def can_follow?(other)
+    !(self == other || is_following?(other))
+  end
+
   def normalize_queue_item_positions!
     queue_items.each_with_index do |item, idx|
       item.update_attributes(queue_position: idx + 1)
