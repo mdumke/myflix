@@ -18,7 +18,7 @@ Myflix::Application.configure do
 
   config.active_support.deprecation = :notify
 
-  config.action_mailer.default_url_options = {host: 'www.myflix-md-2015.herokuapp.com'}
+  config.action_mailer.default_url_options = {host: 'myflix-md-2015.herokuapp.com'}
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     address:              'mail.null2.net',
