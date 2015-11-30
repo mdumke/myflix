@@ -11,6 +11,7 @@ gem 'uglifier'
 gem 'jquery-rails'
 gem 'pg'
 gem 'bcrypt'
+gem 'faker'
 
 group :development do
   gem 'thin'
@@ -28,7 +29,6 @@ group :development, :test do
   gem 'guard-rspec'
 
   gem 'fabrication-rails'
-  gem 'faker'
 end
 
 group :test do
