@@ -16,6 +16,7 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
+      UserMailer.welcome(@user).deliver
       session[:user_id] = @user.id
       flash['notice'] = 'Account was successfully created'
       redirect_to videos_path
