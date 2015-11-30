@@ -17,4 +17,15 @@ Myflix::Application.configure do
   config.i18n.fallbacks = true
 
   config.active_support.deprecation = :notify
+
+  config.action_mailer.default_url_options = {host: 'www.myflix-md-2015.herokuapp.com'}
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    address:              'mail.null2.net',
+    port:                 587,
+    domain:               'null2.net',
+    user_name:            ENV['email_username'],
+    password:             ENV['email_password'],
+    authentication:       'plain',
+    enable_starttls_auto: true  }
 end
