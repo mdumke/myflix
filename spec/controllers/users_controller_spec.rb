@@ -63,22 +63,28 @@ describe UsersController do
     end
 
     context 'email sending' do
-      before do
-        post :create, user: Fabricate.attributes_for(:user)
-      end
+      after { ActionMailer::Base.deliveries.clear }
 
       it 'sends out an email' do
+        post :create, user: Fabricate.attributes_for(:user)
         expect(ActionMailer::Base.deliveries).to be_present
       end
 
       it 'sends to the correct recipient' do
+        post :create, user: Fabricate.attributes_for(:user)
         recipient = ActionMailer::Base.deliveries.last.to
         expect(recipient).to eq([current_user.email])
       end
 
       it 'sends the correct content' do
+        post :create, user: Fabricate.attributes_for(:user)
         content = ActionMailer::Base.deliveries.last.body
         expect(content).to include("Welcome #{current_user.full_name}")
+      end
+
+      it 'does not deliver an email for invalid data' do
+        post :create, user: {email: 'test@abc.com'}
+        expect(ActionMailer::Base.deliveries).to be_empty
       end
     end
 
