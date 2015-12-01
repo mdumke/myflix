@@ -17,4 +17,8 @@ class ApplicationController < ActionController::Base
       redirect_to root_path
     end
   end
+
+  def require_not_signed_in
+    redirect_to home_path if current_user
+  end
 end

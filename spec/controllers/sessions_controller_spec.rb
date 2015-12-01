@@ -28,7 +28,7 @@ describe SessionsController do
   end
 
   describe 'POST create' do
-    let (:alice) { Fabricate(:user) }
+    let (:alice) { Fabricate(:user, token: 'abc') }
 
     context 'with valid credentials' do
       before do
@@ -45,6 +45,10 @@ describe SessionsController do
 
       it 'sets the notice' do
         expect(flash['notice']).not_to be_blank
+      end
+
+      it 'deletes a users token if there still is one' do
+        expect(alice.reload.token).to be_nil
       end
     end
 

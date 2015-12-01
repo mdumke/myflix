@@ -1,11 +1,11 @@
 class SessionsController < ApplicationController
+  before_action :require_not_signed_in, only: [:front, :new]
+
   def front
-    redirect_to home_path if current_user
   end
-  
+
   # GET /login
   def new
-    redirect_to home_path if current_user
   end
 
   # POST /login
@@ -14,6 +14,7 @@ class SessionsController < ApplicationController
 
     if user && user.authenticate(params[:password])
       session[:user_id] = user.id
+      user.update_attribute(:token, nil)
       flash['notice'] = 'Successfully signed in'
       redirect_to videos_path
     else

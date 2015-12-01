@@ -84,7 +84,8 @@ describe UsersController do
 
       it 'does not deliver an email for invalid data' do
         post :create, user: {email: 'test@abc.com'}
-        expect(ActionMailer::Base.deliveries).to be_empty
+        recipient = ActionMailer::Base.deliveries.try(:first).try(:to)
+        expect(recipient).not_to eq(['test@abc.com'])
       end
     end
 
@@ -104,6 +105,79 @@ describe UsersController do
       it 'sets @user' do
         expect(assigns(:user)).to be_a User
       end
+    end
+  end
+
+  describe 'POST send_password_reset_link' do
+    let!(:alice) { Fabricate(:user, email: 'alice@example.com') }
+
+    before { ActionMailer::Base.deliveries.clear }
+
+    it 'redirects to password reset confirmation path' do
+      post :send_password_reset_link, email: 'alice@example.com'
+      expect(response).to redirect_to confirm_password_reset_path
+    end
+
+    it 'sets a token for the user with this email' do
+      expect(alice.token).to be_nil
+      post :send_password_reset_link, email: 'alice@example.com'
+      expect(alice.reload.token).not_to be_nil
+    end
+
+    it 'sends out an email to the user with this email' do
+      post :send_password_reset_link, email: 'alice@example.com'
+      expect(ActionMailer::Base.deliveries).not_to be_empty
+    end
+
+    it 'sends out an email with the token' do
+      post :send_password_reset_link, email: 'alice@example.com'
+      message = ActionMailer::Base.deliveries.last.body
+      expect(message).to include(alice.reload.token)
+    end
+
+    it 'does not do anything if the user is not found' do
+      post :send_password_reset_link, email: 'someoneelse@example.com'
+      expect(ActionMailer::Base.deliveries).to be_empty
+      expect(alice.token).to be_nil
+    end
+  end
+
+  describe 'GET reset_password_form' do
+    let!(:alice) { Fabricate(:user) }
+
+    it 'redirects to the invlalid token path if the token is not found' do
+      get :reset_password_form, id: 'abc'
+      expect(response).to redirect_to invalid_token_path
+    end
+
+    it 'renders the reset-password-view when the token exists' do
+      alice.update_attribute(:token, 'abc')
+      get :reset_password_form, id: 'abc'
+      expect(response).to render_template 'reset_password_form'
+    end
+  end
+
+  describe 'POST reset_password' do
+    let!(:alice) { Fabricate(:user, token: 'abc', password: 'xyz') }
+
+    it 'redirects to the sign in path' do
+      post :reset_password, token: 'abc', password: '123'
+      expect(response).to redirect_to login_path
+    end
+
+    it 'sets the given password for the correct user' do
+      post :reset_password, token: 'abc', password: '123'
+      expect(alice.reload.authenticate('123')).to be_truthy
+    end
+
+    it 'deletes the token for the user' do
+      post :reset_password, token: 'abc', password: '123'
+      expect(alice.reload.token).to be_nil
+    end
+
+    it 'does not do anything when data is invlalid' do
+      post :reset_password, token: 'def', password: '123'
+      expect(alice.reload.authenticate('123')).to be_falsy
     end
   end
 end

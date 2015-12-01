@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   before_action :require_user, only: [:show]
+  before_action :require_not_signed_in, only: [:forgot_password]
   before_action :set_user, only: [:show]
 
   # GET /register
@@ -23,6 +24,38 @@ class UsersController < ApplicationController
     else
       render 'new'
     end
+  end
+
+  def forgot_password
+  end
+
+  def send_password_reset_link
+    user = User.find_by_email(params[:email])
+    if user
+      user.update_attribute(:token, SecureRandom.urlsafe_base64)
+      UserMailer.send_password_reset_link(user).deliver
+    end
+    redirect_to confirm_password_reset_path
+  end
+
+  def confirm_password_reset
+  end
+
+  def reset_password_form
+    @user = User.find_by_token(params[:id])
+
+    unless @user
+      redirect_to invalid_token_path
+    end
+  end
+
+  def reset_password
+    user = User.find_by_token(params[:token])
+    user.update_attributes(password: params[:password], token: nil) if user
+    redirect_to login_path
+  end
+
+  def invalid_token
   end
 
   private
