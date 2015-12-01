@@ -62,6 +62,26 @@ describe UsersController do
       end
     end
 
+    context 'email sending' do
+      before do
+        post :create, user: Fabricate.attributes_for(:user)
+      end
+
+      it 'sends out an email' do
+        expect(ActionMailer::Base.deliveries).to be_present
+      end
+
+      it 'sends to the correct recipient' do
+        recipient = ActionMailer::Base.deliveries.last.to
+        expect(recipient).to eq([current_user.email])
+      end
+
+      it 'sends the correct content' do
+        content = ActionMailer::Base.deliveries.last.body
+        expect(content).to include("Welcome #{current_user.full_name}")
+      end
+    end
+
     context 'with invalid input' do
       before do
         post :create, user: {full_name: '', password: '123'}
