@@ -1,7 +1,9 @@
 require 'spec_helper'
 
 feature 'user resets their password' do
-  scenario 'as regular email-procedure' do
+  background { default_url_options[:host] = 'localhost:3000' }
+
+  scenario 'through regular email-procedure' do
     alice = Fabricate(:user)
     clear_emails
 
@@ -28,7 +30,7 @@ feature 'user resets their password' do
 
   def follow_reset_link_in_email(user)
     open_email(user.email)
-    current_email.click_link(reset_password_form_url(user.reload.token))
+    current_email.click_link(password_reset_url(user.reload.token))
   end
 
   def login_with_new_password(user, password)
