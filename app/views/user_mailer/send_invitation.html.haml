@@ -7,5 +7,5 @@
   Message: #{@invitation.message}
 
 %div
-  = link_to 'Accept this invitation', '#'
+  = link_to 'Accept this invitation', register_with_invitation_token_url(@invitation.token)
 

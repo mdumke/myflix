@@ -3,6 +3,7 @@
     .col-sm-10.col-sm-offset-1
       = bootstrap_form_for(@user, layout: :horizontal,
           label_col: 'col-sm-2', control_col: 'col-sm-6') do |f|
+        = hidden_field_tag :token, @invitation ? @invitation.token : nil
 
         %header
           %h1 Register

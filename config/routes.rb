@@ -8,7 +8,8 @@ Myflix::Application.routes.draw do
   post 'login', to: 'sessions#create'
   get 'logout', to: 'sessions#destroy'
   get 'register', to: 'users#new'
-  get 'register/:token', to: 'users#new'
+  get 'register/:token', to: 'users#new_with_invitation_token',
+                         as: 'register_with_invitation_token'
 
   get 'my_queue', to: 'queue_items#index'
   patch 'my_queue/update', to: 'queue_items#update_queue'
@@ -23,7 +24,7 @@ Myflix::Application.routes.draw do
   resources :invitations, only: [:new, :create]
 
   resources :password_resets, only: [:show, :update]
-  get 'invalid_token', to: 'password_resets#token_invalid'
+  get 'invalid_token', to: 'pages#invalid_token'
 
   resources :queue_items, only: [:create, :destroy]
   resources :relationships, only: [:create, :destroy]

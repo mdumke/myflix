@@ -8,6 +8,19 @@ class UsersController < ApplicationController
     @user = User.new
   end
 
+  def new_with_invitation_token
+    @invitation = Invitation.find_by_token(params[:token])
+
+    if @invitation
+      @user = User.new(
+        full_name: @invitation.recipient_name,
+        email: @invitation.recipient_email)
+      render 'new'
+    else
+      redirect_to invalid_token_path
+    end
+  end
+
   def show
     @videos = @user.queue_items.map(&:video)
     @reviews = @user.reviews
