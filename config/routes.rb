@@ -20,7 +20,7 @@ Myflix::Application.routes.draw do
     get :confirm, on: :collection
   end
 
-  resources :invitations, only: [:new]
+  resources :invitations, only: [:new, :create]
 
   resources :password_resets, only: [:show, :update]
   get 'invalid_token', to: 'password_resets#token_invalid'
