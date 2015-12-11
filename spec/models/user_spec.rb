@@ -4,14 +4,14 @@ describe User, type: :model do
   let(:alice) { Fabricate(:user) }
   let(:new_user) { User.new(full_name: 'n', email: 'a@b', password: '123') }
 
-  it { should have_many(:reviews) }
-  it { should have_many(:queue_items) }
-  it { should have_many(:followers) }
-  it { should have_many(:leaders) }
-  it { should validate_presence_of(:full_name) }
-  it { should validate_presence_of(:password) }
-  it { should validate_presence_of(:email) }
-  it { should validate_uniqueness_of(:email) }
+  it { is_expected.to have_many(:reviews) }
+  it { is_expected.to have_many(:queue_items) }
+  it { is_expected.to have_many(:followers) }
+  it { is_expected.to have_many(:leaders) }
+  it { is_expected.to validate_presence_of(:full_name) }
+  it { is_expected.to validate_presence_of(:password) }
+  it { is_expected.to validate_presence_of(:email) }
+  it { is_expected.to validate_uniqueness_of(:email) }
 
   it 'does not complain about missing confirmation' do
     expect(new_user.valid?).to be_truthy
