@@ -54,5 +54,28 @@ describe User, type: :model do
       expect(alice.has_queued?(Fabricate(:video))).to be_falsy
     end
   end
+
+  describe '#follow' do
+    it 'makes the user a follower of the other user' do
+      user = Fabricate(:user)
+      other = Fabricate(:user)
+      user.follow(other)
+      expect(other.followers).to include(user)
+    end
+
+    it 'does not let a user follow themselves' do
+      user = Fabricate(:user)
+      user.follow(user)
+      expect(user.followers).not_to include(user)
+    end
+
+    it 'does not do anything if the users if already following' do
+      user = Fabricate(:user)
+      other = Fabricate(:user)
+      Fabricate(:relationship, leader: other, follower: user)
+      user.follow(other)
+      expect(other.followers).to eq([user])
+    end
+  end
 end
 

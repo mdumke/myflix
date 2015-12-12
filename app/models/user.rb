@@ -26,6 +26,11 @@ class User < ActiveRecord::Base
     leaders.include?(user)
   end
 
+  def follow(other)
+    return if self == other || is_following?(other)
+    Relationship.create(leader: other, follower: self)
+  end
+
   def can_follow?(other)
     !(self == other || is_following?(other))
   end

@@ -136,6 +136,29 @@ describe UsersController do
         expect(assigns(:user)).to be_a User
       end
     end
+
+    context 'with valid token' do
+      let!(:invitation) { Fabricate(:invitation) }
+
+      before do
+        post :create, user: {
+          full_name: invitation.recipient_name,
+          email: invitation.recipient_email,
+          password: '123'}, token: invitation.token
+      end
+
+      it 'makes the current user follow the newly created user' do
+        expect(User.first.is_following?(User.last)).to be_truthy
+      end
+
+      it 'makes the new user follow the current user' do
+        expect(User.last.is_following?(User.first)).to be_truthy
+      end
+
+      it 'expires the invitation' do
+        expect(invitation.reload.token).to be_nil
+      end
+    end
   end
 end
 

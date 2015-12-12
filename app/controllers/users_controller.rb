@@ -30,6 +30,13 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
+      if params[:token]
+        invitation = Invitation.find_by_token(params[:token])
+        inviter = invitation.inviter
+        inviter.follow(@user)
+        @user.follow(inviter)
+        invitation.update_attributes(token: nil)
+      end
       UserMailer.welcome(@user).deliver
       session[:user_id] = @user.id
       flash['notice'] = 'Account was successfully created'
