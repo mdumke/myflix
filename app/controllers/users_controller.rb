@@ -30,13 +30,7 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
-      if params[:token]
-        invitation = Invitation.find_by_token(params[:token])
-        inviter = invitation.inviter
-        inviter.follow(@user)
-        @user.follow(inviter)
-        invitation.update_attributes(token: nil)
-      end
+      handle_invitation if params[:token]
       UserMailer.welcome(@user).deliver
       session[:user_id] = @user.id
       flash['notice'] = 'Account was successfully created'
@@ -47,6 +41,14 @@ class UsersController < ApplicationController
   end
 
   private
+
+  def handle_invitation
+    invitation = Invitation.find_by_token(params[:token])
+    inviter = invitation.inviter
+    inviter.follow(@user)
+    @user.follow(inviter)
+    invitation.update_attributes(token: nil)
+  end
 
   def user_params
     params.require(:user).permit(:full_name, :email, :password)
