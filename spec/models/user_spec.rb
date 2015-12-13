@@ -4,14 +4,14 @@ describe User, type: :model do
   let(:alice) { Fabricate(:user) }
   let(:new_user) { User.new(full_name: 'n', email: 'a@b', password: '123') }
 
-  it { should have_many(:reviews) }
-  it { should have_many(:queue_items) }
-  it { should have_many(:followers) }
-  it { should have_many(:leaders) }
-  it { should validate_presence_of(:full_name) }
-  it { should validate_presence_of(:password) }
-  it { should validate_presence_of(:email) }
-  it { should validate_uniqueness_of(:email) }
+  it { is_expected.to have_many(:reviews) }
+  it { is_expected.to have_many(:queue_items) }
+  it { is_expected.to have_many(:followers) }
+  it { is_expected.to have_many(:leaders) }
+  it { is_expected.to validate_presence_of(:full_name) }
+  it { is_expected.to validate_presence_of(:password) }
+  it { is_expected.to validate_presence_of(:email) }
+  it { is_expected.to validate_uniqueness_of(:email) }
 
   it 'does not complain about missing confirmation' do
     expect(new_user.valid?).to be_truthy
@@ -52,6 +52,29 @@ describe User, type: :model do
 
     it 'returns false if video is not already in the queue' do
       expect(alice.has_queued?(Fabricate(:video))).to be_falsy
+    end
+  end
+
+  describe '#follow' do
+    it 'makes the user a follower of the other user' do
+      user = Fabricate(:user)
+      other = Fabricate(:user)
+      user.follow(other)
+      expect(other.followers).to include(user)
+    end
+
+    it 'does not let a user follow themselves' do
+      user = Fabricate(:user)
+      user.follow(user)
+      expect(user.followers).not_to include(user)
+    end
+
+    it 'does not do anything if the users if already following' do
+      user = Fabricate(:user)
+      other = Fabricate(:user)
+      Fabricate(:relationship, leader: other, follower: user)
+      user.follow(other)
+      expect(other.followers).to eq([user])
     end
   end
 end

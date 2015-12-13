@@ -1,0 +1,11 @@
+%h1 Hello #{@invitation.recipient_name}!
+
+%div
+  You've been invited by #{@invitation.inviter.full_name} to join MyFlix:
+
+%div
+  Message: #{@invitation.message}
+
+%div
+  = link_to 'Accept this invitation', register_with_invitation_token_url(@invitation.token)
+

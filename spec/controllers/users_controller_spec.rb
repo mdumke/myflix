@@ -47,6 +47,36 @@ describe UsersController do
     end
   end
 
+  describe 'GET new_with_invitation_token' do
+    context 'with valid token' do
+      it 'renders the new template' do
+        invitation = Fabricate(:invitation)
+        get :new_with_invitation_token, token: invitation.token
+        expect(response).to render_template('new')
+      end
+
+      it 'sets the correct full name and email for the new user' do
+        invitation = Fabricate(:invitation)
+        get :new_with_invitation_token, token: invitation.token
+        expect(assigns(:user).email).to eq(invitation.recipient_email)
+        expect(assigns(:user).full_name).to eq(invitation.recipient_name)
+      end
+
+      it 'sets @invitation' do
+        invitation = Fabricate(:invitation)
+        get :new_with_invitation_token, token: invitation.token
+        expect(assigns(:invitation)).to eq(invitation)
+      end
+    end
+
+    context 'with invalid token' do
+      it 'redirects to the token expired page' do
+        get :new_with_invitation_token, token: 'abc'
+        expect(response).to redirect_to invalid_token_path
+      end
+    end
+  end
+
   describe 'POST create' do
     context 'with valid input' do
       before do
@@ -104,6 +134,29 @@ describe UsersController do
 
       it 'sets @user' do
         expect(assigns(:user)).to be_a User
+      end
+    end
+
+    context 'with valid token' do
+      let!(:invitation) { Fabricate(:invitation) }
+
+      before do
+        post :create, user: {
+          full_name: invitation.recipient_name,
+          email: invitation.recipient_email,
+          password: '123'}, token: invitation.token
+      end
+
+      it 'makes the current user follow the newly created user' do
+        expect(User.first.is_following?(User.last)).to be_truthy
+      end
+
+      it 'makes the new user follow the current user' do
+        expect(User.last.is_following?(User.first)).to be_truthy
+      end
+
+      it 'expires the invitation' do
+        expect(invitation.reload.token).to be_nil
       end
     end
   end

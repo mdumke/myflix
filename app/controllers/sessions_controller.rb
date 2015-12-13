@@ -1,13 +1,6 @@
 class SessionsController < ApplicationController
   before_action :require_not_signed_in, only: [:front, :new]
 
-  def front
-  end
-
-  # GET /login
-  def new
-  end
-
   # POST /login
   def create
     user = User.find_by_email(params[:email])

@@ -39,12 +39,5 @@ describe PasswordResetsController do
       expect(alice.reload.authenticate('123')).to be_falsy
     end
   end
-
-  describe 'GET token_invalid' do
-    it 'renders the correct template' do
-      get :token_invalid
-      expect(response).to render_template 'token_invalid'
-    end
-  end
 end
 
