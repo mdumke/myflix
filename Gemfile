@@ -14,6 +14,7 @@ gem 'bcrypt'
 gem 'faker'
 gem 'sidekiq'
 gem 'puma'
+gem 'sinatra', require: nil
 
 group :development do
   gem 'better_errors'

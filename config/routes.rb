@@ -34,4 +34,9 @@ Myflix::Application.routes.draw do
     get 'search', on: :collection
     post 'review', on: :member
   end
+
+  require 'sidekiq/web'
+  require 'login_constraint'
+  mount Sidekiq::Web => '/workers', constraints: LoginConstraint.new
 end
+
