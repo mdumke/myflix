@@ -13,9 +13,9 @@ gem 'pg'
 gem 'bcrypt'
 gem 'faker'
 gem 'sidekiq'
+gem 'puma'
 
 group :development do
-  gem 'thin'
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'letter_opener'
