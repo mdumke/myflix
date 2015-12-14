@@ -31,7 +31,7 @@ class UsersController < ApplicationController
 
     if @user.save
       handle_invitation if params[:token]
-      UserMailer.welcome(@user).deliver
+      UserMailer.delay.welcome(@user.id)
       session[:user_id] = @user.id
       flash['notice'] = 'Account was successfully created'
       redirect_to videos_path

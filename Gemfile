@@ -12,6 +12,7 @@ gem 'jquery-rails'
 gem 'pg'
 gem 'bcrypt'
 gem 'faker'
+gem 'sidekiq'
 
 group :development do
   gem 'thin'
